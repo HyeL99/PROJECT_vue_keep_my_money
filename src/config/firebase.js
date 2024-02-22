@@ -1,5 +1,11 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import {
+  getFirestore,
+  getDocs,
+  query,
+  collection,
+  where,
+} from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
@@ -15,3 +21,18 @@ export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
+
+export async function getDocsFromFB({ path, condition }) {
+  const dataList = [];
+  let querySnapshot = null;
+  if (condition) {
+    const [con1, con2, con3] = condition;
+    querySnapshot = await getDocs(
+      query(collection(db, path), where(con1, con2, con3))
+    );
+  } else {
+    querySnapshot = await getDocs(query(collection(db, path)));
+  }
+  querySnapshot.forEach((doc) => dataList.push(doc.data()));
+  return dataList;
+}

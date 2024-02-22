@@ -1,0 +1,39 @@
+@use "./_variables.scss" as v;
+:root {
+  --color-1: #{v.$color_red_1};
+  --color-2: #{v.$color_red_2};
+  --color-3: #{v.$color_red_3};
+  --color-4: #{v.$color_red_4};
+
+  --color-red: #{v.$color_red_4};
+  --color-indigo: #{v.$color_indigo_4};
+  --color-blue: #{v.$color_blue_4};
+  --color-green: #{v.$color_green_4};
+}
+html[data-theme="red"] {
+  --color-1: #{v.$color_red_1};
+  --color-2: #{v.$color_red_2};
+  --color-3: #{v.$color_red_3};
+  --color-4: #{v.$color_red_4};
+}
+
+html[data-theme="blue"] {
+  --color-1: #{v.$color_blue_1};
+  --color-2: #{v.$color_blue_2};
+  --color-3: #{v.$color_blue_3};
+  --color-4: #{v.$color_blue_4};
+}
+
+html[data-theme="indigo"] {
+  --color-1: #{v.$color_indigo_1};
+  --color-2: #{v.$color_indigo_2};
+  --color-3: #{v.$color_indigo_3};
+  --color-4: #{v.$color_indigo_4};
+}
+
+html[data-theme="green"] {
+  --color-1: #{v.$color_green_1};
+  --color-2: #{v.$color_green_2};
+  --color-3: #{v.$color_green_3};
+  --color-4: #{v.$color_green_4};
+}

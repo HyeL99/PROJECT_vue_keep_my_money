@@ -1,28 +1,19 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import createPersistedState from "vuex-persistedstate";
+import loginStore from "@/store/modules/loginStore";
+import anotherStore from "@/store/modules/anotherStore";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {
-    isLogin: false,
-    userData: {},
-    tempUserData: {},
+  modules: {
+    loginStore: loginStore,
+    anotherStore: anotherStore,
   },
-  mutations: {
-    initUserData(state) {
-      state.isLogin = false;
-      state.userData = {};
-      state.tempUserData = {};
-    },
-    settingUserData(state, payload) {
-      state.isLogin = true;
-      state.userData = Object.assign({}, state.userData, payload);
-    },
-    settingTempUserData(state, payload) {
-      state.tempUserData = Object.assign({}, state.userData, payload);
-    },
-  },
-  actions: {},
-  modules: {},
+  plugins: [
+    createPersistedState({
+      paths: ["loginStore"],
+    }),
+  ],
 });

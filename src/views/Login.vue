@@ -2,7 +2,7 @@
   <div>
     <p>Login</p>
     <GoogleLoginButton @openPopup="isPopupOpen = true" />
-    <SignUpPopup v-if="isPopupOpen" />
+    <SignUpPopup v-if="isPopupOpen" @closePopup="isPopupOpen = false" />
   </div>
 </template>
 
@@ -15,7 +15,7 @@ export default {
   components: { SignUpPopup, GoogleLoginButton },
   data() {
     return {
-      isPopupOpen: false,
+      isPopupOpen: true,
     };
   },
   methods: {},
