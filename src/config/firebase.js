@@ -1,13 +1,10 @@
 import { initializeApp } from "firebase/app";
-import {
-  getFirestore,
-  getDocs,
-  query,
-  collection,
-  where,
-} from "firebase/firestore";
+import { getFirestore, getDocs } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
+/* =============================
+        파이어베이스 세팅
+============================= */
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_APIKEY,
   authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
@@ -22,17 +19,12 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
 
-export async function getDocsFromFB({ path, condition }) {
+/* =============================
+        파이어베이스 기능
+============================= */
+export async function getDocsFromFB(query) {
   const dataList = [];
-  let querySnapshot = null;
-  if (condition) {
-    const [con1, con2, con3] = condition;
-    querySnapshot = await getDocs(
-      query(collection(db, path), where(con1, con2, con3))
-    );
-  } else {
-    querySnapshot = await getDocs(query(collection(db, path)));
-  }
+  const querySnapshot = await getDocs(query);
   querySnapshot.forEach((doc) => dataList.push(doc.data()));
   return dataList;
 }

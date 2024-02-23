@@ -1,9 +1,9 @@
 <template>
-  <div>여기가 메인</div>
+  <main>Statistics</main>
 </template>
 
 <script>
 export default {
-  name: "MainView",
+  name: "Statistics",
 };
 </script>

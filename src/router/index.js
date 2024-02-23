@@ -34,25 +34,16 @@ const router = new VueRouter({
   routes,
 });
 router.beforeEach((to, from, next) => {
-  console.log("to", to.name, to.path);
-  console.log("from", from.name, from.path);
-  console.log(store.state);
   if (to.name === "error") next();
   else if (to.name === "intro") {
-    if (store.state.loginStore.isLogin) {
-      next({name: "main"});
-    } else {
-      next();
-    }
+    next();
   } else {
-    if (store.state.loginStore.isLogin) {
+    if (store.state.loginStore.isLogin && store.state.dataStore.isSetData) {
       next();
     } else {
       next("/");
     }
   }
-  // console.log('asdfasdf', to, from, next)
-  //
   next();
 });
 export default router;

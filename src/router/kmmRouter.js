@@ -1,46 +1,28 @@
 const routes = [
   {
-    path: "/main",
-    name: "main",
+    path: "/calendar",
+    name: "calendar",
     component: () =>
-      import(/* webpackChunkName: "mngIndex" */ "../views/MainView.vue"),
+      import(/* webpackChunkName: "mngIndex" */ "../views/kmm/MainView.vue"),
   },
   {
-    path: "/login",
-    name: "login",
+    path: "/account",
+    name: "account",
     component: () =>
-      import(/* webpackChunkName: "mngIndex" */ "../views/Login.vue"),
-  },
-  {
-    path: "/my",
-    name: "my",
-    component: () =>
-      import(/* webpackChunkName: "mngIndex" */ "../views/MyPage.vue"),
+      import(/* webpackChunkName: "mngIndex" */ "../views/kmm/MyPage.vue"),
   },
 
   {
-    path: "/mng",
-    name: "mngIndex",
+    path: "/manage",
+    name: "manage",
     component: () =>
-      import(/* webpackChunkName: "mngIndex" */ "../views/manage/Index.vue"),
-    children: [
-      {
-        path: "/card",
-        name: "mngCard",
-        component: () =>
-          import(
-            /* webpackChunkName: "mngCard" */ "../views/manage/ManageCard.vue"
-          ),
-      },
-      {
-        path: "/account",
-        name: "mngAccount",
-        component: () =>
-          import(
-            /* webpackChunkName: "mngAccount" */ "../views/manage/ManageCard.vue"
-          ),
-      },
-    ],
+      import(/* webpackChunkName: "mngIndex" */ "../views/kmm/Manage.vue"),
+  },
+  {
+    path: "/statistics",
+    name: "statistics",
+    component: () =>
+      import(/* webpackChunkName: "mngIndex" */ "../views/kmm/Statistics.vue"),
   },
 ];
 

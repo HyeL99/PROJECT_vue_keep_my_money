@@ -28,10 +28,12 @@ export default {
           const docRef = doc(db, "Users", email);
           const docSnap = await getDoc(docRef);
 
-          if (docSnap.exists()) { console.log("계정 존재")
+          if (docSnap.exists()) {
+            console.log("계정 존재");
             this.$store.commit("loginStore/settingUserData", docSnap.data());
             this.$emit("loginComplete");
-          } else { console.log("계정 미존재")
+          } else {
+            console.log("계정 미존재");
             const userData = { name, email };
             await setDoc(doc(db, "Users", userData.email), userData);
             this.$store.commit("loginStore/initUserData");

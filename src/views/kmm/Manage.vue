@@ -1,9 +1,9 @@
 <template>
-  <div>Index</div>
+  <main>Manage</main>
 </template>
 
 <script>
 export default {
-  name: "ManageIndex",
+  name: "Manage",
 };
 </script>

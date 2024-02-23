@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <main>
     <button @click="doLogout">logout</button>
-  </div>
+  </main>
 </template>
 
 <script>
