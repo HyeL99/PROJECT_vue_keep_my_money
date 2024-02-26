@@ -14,6 +14,18 @@
         @click="setActiveDate(day.allDate)"
       >
         <span>{{ day.date }}</span>
+        <div class="dots" v-if="historyList[day.allDate].list.length > 0">
+          <span
+            class="redDot"
+            v-if="historyList[day.allDate].list.find((item) => item.useCode)"
+            >red</span
+          >
+          <span
+            class="greenDot"
+            v-if="historyList[day.allDate].list.find((item) => !item.useCode)"
+            >green</span
+          >
+        </div>
       </button>
     </div>
   </div>
@@ -30,8 +42,10 @@ export default {
       today: this.$moment().format("YYYYMMDD"),
       // today: "20240704",
       days: [],
-      activeDate: "20240204",
-      historyList: null,
+      activeDate: "",
+      activeInfo: {},
+      historyList: {},
+      historyListTemp: {},
     };
   },
   computed: {
@@ -40,6 +54,7 @@ export default {
   mounted() {
     console.log("today", this.today);
     this.getDays(this.today);
+    this.setHistory();
   },
   methods: {
     getDays(date) {
@@ -54,19 +69,21 @@ export default {
         `${thisDayInfo[0]}${thisDayInfo[1]}01`
       ).day();
       const lastDay = thisDay.daysInMonth();
-      const lastMonth = thisDay.subtract(1, "month");
+      const lastMonth = this.$moment(date).subtract(1, "month");
       const lastMonthInfo = [
         lastMonth.format("YYYY"),
         lastMonth.format("MM"),
         lastMonth.format("DD"),
       ];
-      const lastMonthLastDay = thisDay.subtract(1, "month").daysInMonth();
-      const nextMonth = thisDay.add(1, "month");
+      const lastMonthLastDay = lastMonth.daysInMonth();
+      const nextMonth = this.$moment(date).add(1, "month");
       const nextMonthInfo = [
         nextMonth.format("YYYY"),
         nextMonth.format("MM"),
         nextMonth.format("DD"),
       ];
+
+      this.historyList = {};
 
       for (let i = 0; i < firstDay; i++) {
         days.unshift({
@@ -76,6 +93,9 @@ export default {
             lastMonthLastDay - i
           }`,
         });
+        this.historyList[
+          `${lastMonthInfo[0]}${lastMonthInfo[1]}${lastMonthLastDay - i}`
+        ] = { list: [] };
       }
       for (let i = 1; i <= lastDay; i++) {
         days.push({
@@ -83,6 +103,9 @@ export default {
           date: i,
           allDate: `${thisDayInfo[0]}${thisDayInfo[1]}${i < 10 ? "0" + i : i}`,
         });
+        this.historyList[
+          `${thisDayInfo[0]}${thisDayInfo[1]}${i < 10 ? "0" + i : i}`
+        ] = { list: [] };
       }
 
       for (let i = 1; days.length < 42; i++) {
@@ -93,15 +116,38 @@ export default {
             i < 10 ? "0" + i : i
           }`,
         });
+        this.historyList[
+          `${nextMonthInfo[0]}${nextMonthInfo[1]}${i < 10 ? "0" + i : i}`
+        ] = { list: [] };
       }
       this.days = days;
+      this.historyListTemp = Object.assign({}, this.historyList);
     },
     setActiveDate(date) {
-      this.activeDate = date;
+      if(this.activeDate === date) {
+        this.activeDate = "";
+        this.$emit("unSelected");
+      } else {
+        const activeInfo = this.historyList[date];
+        this.activeDate = date;
+        console.log(activeInfo, date);
+        this.$emit("selectDate", date, activeInfo);
+      }
+
     },
     setHistory() {
-      /* 여기부터 개발해야함 */
-      return false;
+      console.log("히스토리 세팅");
+      this.historyList = Object.assign({}, this.historyListTemp);
+      this.accountHistoryList.forEach((item) => {
+        if (item.date in this.historyList) {
+          this.historyList[item.date].list.push(item);
+        }
+      });
+      this.cardHistoryList.forEach((item) => {
+        if (item.date in this.historyList) {
+          this.historyList[item.date].list.push(item);
+        }
+      });
     },
   },
 };

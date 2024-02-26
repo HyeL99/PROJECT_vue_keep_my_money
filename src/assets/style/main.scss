@@ -41,7 +41,6 @@
       padding: 1rem 2rem;
     }
   }
-
 }
 .themeButtons {
   display: flex;
@@ -58,7 +57,7 @@
     color: #fff;
     border-radius: 0.5rem;
   }
-  > button{
+  > button {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -89,21 +88,43 @@
   font-weight: 700;
   font-size: 0.8rem;
   text-align: center;
-  >button {
-    padding: 0.5rem 2rem;
+  > button {
+    padding: 1rem 2rem;
     font-size: 1.3rem;
   }
   .calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: 30px repeat(6, 50px);
+    grid-template-rows: 1rem repeat(6, 50px);
     .date {
       color: black;
-      span {
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.4rem;
+      align-items: center;
+      > span {
         display: inline-block;
         width: 1.5rem;
         position: relative;
         padding: 2px;
+      }
+      .dots {
+        display: flex;
+        justify-content: center;
+        column-gap: 0.2rem;
+        > span {
+          font-size: 0;
+          display: block;
+          width: 0.5rem;
+          height: 0.5rem;
+          border-radius: 50%;
+        }
+        .redDot {
+          background-color: var(--color-red);
+        }
+        .greenDot {
+          background-color: var(--color-green);
+        }
       }
     }
 
@@ -113,7 +134,7 @@
     .today {
       color: var(--color-4);
       font-weight: 900;
-      span {
+      > span {
         border-bottom: 1px solid var(--color-4);
         &::after {
           content: "today";
@@ -126,7 +147,10 @@
       }
     }
     .active {
-      span {
+      &.today > span {
+        border: none;
+      }
+      > span {
         color: #fff;
         font-weight: 900;
         &::before {
@@ -144,7 +168,6 @@
           display: none;
         }
       }
-
     }
   }
 }
