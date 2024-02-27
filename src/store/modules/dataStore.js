@@ -6,8 +6,7 @@ Vue.use(Vuex);
 const state = {
   accountList: [],
   cardList: [],
-  accountHistoryList: [],
-  cardHistoryList: [],
+  historyList: [],
   isSetData: false,
 };
 const getters = {};
@@ -15,8 +14,7 @@ const mutations = {
   initData(state) {
     state.accountList = [];
     state.cardList = [];
-    state.accountHistoryList = [];
-    state.cardHistoryList = [];
+    state.historyList = [];
   },
   settingData(state, { type, data }) {
     switch (type) {
@@ -26,11 +24,8 @@ const mutations = {
       case "card":
         state.cardList = data;
         break;
-      case "accHis":
-        state.accountHistoryList = data;
-        break;
-      case "cardHis":
-        state.cardHistoryList = data;
+      case "his":
+        state.historyList = data;
         break;
     }
   },

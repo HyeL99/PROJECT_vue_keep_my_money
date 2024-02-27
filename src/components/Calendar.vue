@@ -13,19 +13,19 @@
         }${day.allDate === activeDate ? ' active' : ''}`"
         @click="setActiveDate(day.allDate)"
       >
-        <span>{{ day.date }}</span>
-        <div class="dots" v-if="historyList[day.allDate].list.length > 0">
+        <span class="calendarDate">{{ day.date }}</span>
+        <span class="dots" v-if="historys[day.allDate].list.length > 0">
           <span
             class="redDot"
-            v-if="historyList[day.allDate].list.find((item) => item.useCode)"
+            v-if="historys[day.allDate].list.find((item) => item.useCode)"
             >red</span
           >
           <span
             class="greenDot"
-            v-if="historyList[day.allDate].list.find((item) => !item.useCode)"
+            v-if="historys[day.allDate].list.find((item) => !item.useCode)"
             >green</span
           >
-        </div>
+        </span>
       </button>
     </div>
   </div>
@@ -44,12 +44,12 @@ export default {
       days: [],
       activeDate: "",
       activeInfo: {},
-      historyList: {},
-      historyListTemp: {},
+      historys: {},
+      historysTemp: {},
     };
   },
   computed: {
-    ...mapState("dataStore", ["accountHistoryList", "cardHistoryList"]),
+    ...mapState("dataStore", ["historyList"]),
   },
   mounted() {
     console.log("today", this.today);
@@ -83,7 +83,7 @@ export default {
         nextMonth.format("DD"),
       ];
 
-      this.historyList = {};
+      this.historys = {};
 
       for (let i = 0; i < firstDay; i++) {
         days.unshift({
@@ -93,7 +93,7 @@ export default {
             lastMonthLastDay - i
           }`,
         });
-        this.historyList[
+        this.historys[
           `${lastMonthInfo[0]}${lastMonthInfo[1]}${lastMonthLastDay - i}`
         ] = { list: [] };
       }
@@ -103,7 +103,7 @@ export default {
           date: i,
           allDate: `${thisDayInfo[0]}${thisDayInfo[1]}${i < 10 ? "0" + i : i}`,
         });
-        this.historyList[
+        this.historys[
           `${thisDayInfo[0]}${thisDayInfo[1]}${i < 10 ? "0" + i : i}`
         ] = { list: [] };
       }
@@ -116,36 +116,30 @@ export default {
             i < 10 ? "0" + i : i
           }`,
         });
-        this.historyList[
+        this.historys[
           `${nextMonthInfo[0]}${nextMonthInfo[1]}${i < 10 ? "0" + i : i}`
         ] = { list: [] };
       }
       this.days = days;
-      this.historyListTemp = Object.assign({}, this.historyList);
+      this.historysTemp = Object.assign({}, this.historys);
     },
     setActiveDate(date) {
-      if(this.activeDate === date) {
+      if (this.activeDate === date) {
         this.activeDate = "";
         this.$emit("unSelected");
       } else {
-        const activeInfo = this.historyList[date];
+        const activeInfo = this.historys[date];
         this.activeDate = date;
         console.log(activeInfo, date);
         this.$emit("selectDate", date, activeInfo);
       }
-
     },
     setHistory() {
       console.log("히스토리 세팅");
-      this.historyList = Object.assign({}, this.historyListTemp);
-      this.accountHistoryList.forEach((item) => {
-        if (item.date in this.historyList) {
-          this.historyList[item.date].list.push(item);
-        }
-      });
-      this.cardHistoryList.forEach((item) => {
-        if (item.date in this.historyList) {
-          this.historyList[item.date].list.push(item);
+      this.historys = Object.assign({}, this.historysTemp);
+      this.historyList.forEach((item) => {
+        if (item.date in this.historys) {
+          this.historys[item.date].list.push(item);
         }
       });
     },

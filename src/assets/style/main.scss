@@ -3,6 +3,46 @@
   .container {
   }
 }
+.secessionPage {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  height: 100%;
+  font-weight: 700;
+  padding: 5rem 0;
+  .logo {
+    width: 80%;
+    max-width: 600px;
+    height: auto;
+    fill: var(--color-4);
+  }
+  p {
+    font-size: 1.2rem;
+    line-height: 1.5rem;
+    span {
+      font-weight: 900;
+    }
+  }
+  .sc_buttons {
+    width:80%;
+    max-width: 400px;
+     button {
+       width: 100%;
+       &:first-of-type {
+         background: var(--color-4);
+         color: #fff;
+         padding: 0.7rem;
+         border-radius: 0.5rem;
+       }
+       &:last-of-type {
+         color: #a5a5a5;
+         margin-top: 1rem;
+       }
+     }
+   }
+}
 .introPage {
   text-align: center;
   display: flex;
@@ -102,7 +142,7 @@
       flex-direction: column;
       row-gap: 0.4rem;
       align-items: center;
-      > span {
+      .calendarDate {
         display: inline-block;
         width: 1.5rem;
         position: relative;
@@ -134,7 +174,7 @@
     .today {
       color: var(--color-4);
       font-weight: 900;
-      > span {
+      .calendarDate {
         border-bottom: 1px solid var(--color-4);
         &::after {
           content: "today";
@@ -147,10 +187,10 @@
       }
     }
     .active {
-      &.today > span {
+      &.today .calendarDate {
         border: none;
       }
-      > span {
+      .calendarDate {
         color: #fff;
         font-weight: 900;
         &::before {
@@ -171,10 +211,163 @@
     }
   }
 }
+.slideCard {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -1rem;
+  height: calc(100vh - 50px - 3.3rem - 1rem - 300px + 1rem);
+  width: calc(80% + 2rem);
+  max-width: calc(400px + 2rem);
+  margin: 0 auto;
+}
+.card {
+  box-shadow: 0 0 3px 3px var(--color-4-op25);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  .card-header {
+    display: flex;
+    grid-template-columns: auto 1.8rem 1.8rem;
+    grid-template-rows: 2rem;
+    column-gap: 0.3rem;
+    align-items: center;
+    .card-title {
+      font-size: 1.2rem;
+      flex-grow: 1
+    }
+    .card-buttons {
+      display: flex;
+      column-gap: 0.3rem;
+      button {
+        width: 1.8rem;
+        height: 1.8rem;
+        background-color: var(--color-4);
+        color: #fff;
+        border-radius: 50%;
+        font-size: 1.8rem;
+        box-shadow: 1px 1px 3px 3px var(--color-4-op25);
+      }
+    }
+  }
+  ul {
+    margin-top: 0.5rem;
+    li {
+      display: flex;
+      align-items: center;
+      column-gap: 5px;
+      line-height: 2rem;
+      font-weight: 700;
+      .card-dot {
+        font-size: 0;
+        display: block;
+        width: 0.4rem;
+        height: 0.4rem;
+        border-radius: 50%;
+        background-color: var(--color-4);
+        &.red { background-color: var(--color-red) }
+        &.green { background-color: var(--color-green) }
+      }
+      .detail {
+        flex-grow: 1;
+        line-height: 1.8rem;
+        color: #000;
+      }
+      .cost {
+        &.red { color: var(--color-red) }
+        &.green { color: var(--color-green) }
+      }
+    }
+  }
+}
+svg{
+  .thisColor {
+    fill: #a5a5a5;
+  }
+  &.active {
+    .thisColor {
+      fill: var(--color-4);
+    }
+  }
+}
 header {
   background-color: var(--color-4);
   display: flex;
   height: 50px;
   padding: 0.5rem;
   justify-content: space-around;
+}
+main {
+  height: calc(100vh - 50px);
+  overflow-y: hidden;
+  position: relative;
+  .inner {
+    width: 90%;
+    max-width: 400px;
+    margin: 0 auto;
+    .manage-card {
+      .card-title {
+        font-size: 1rem;
+      }
+      &:not(:first-of-type) {
+        margin-top: 1.5rem;
+      }
+    }
+  }
+  .main-header {
+    font-size: 1.3rem;
+    padding: 1rem 0;
+  }
+  .myPageInner {
+    .accountCard {
+      display: flex;
+      flex-direction: column;
+      row-gap: 1rem;
+      p {
+        span:first-of-type {
+          font-weight: 700;
+          margin-right: 1rem;
+        }
+      }
+      button {
+        font-weight: 700;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        &:first-of-type {
+          background-color: var(--color-4);
+          color: #fff;
+        }
+        &:last-of-type {
+          background-color: var(--color-1);
+          color: var(--color-4);
+        }
+      }
+    }
+    .themeCard {
+      display: flex;
+      flex-direction: column;
+      row-gap: 1rem;
+      align-items: center;
+      > button {
+        background-color: var(--color-4);
+        color: #fff;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        width: 100%;
+      }
+    }
+  }
+}
+.popup {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+  .handleHistoryCard {
+    width: 80%;
+    max-width: 400px;
+    margin: 5rem auto;
+    background-color: #fff;
+  }
 }

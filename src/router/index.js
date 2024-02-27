@@ -12,6 +12,12 @@ const routes = [
       import(/* webpackChunkName: "intro" */ "@/views/Intro.vue"),
   },
   {
+    path: "/secession",
+    name: "secession",
+    component: () =>
+      import(/* webpackChunkName: "mngIndex" */ "../views/Secession.vue"),
+  },
+  {
     path: "/kmm",
     component: () => import("@/views/Index.vue"),
     children: [...kmmRouter],

@@ -17,6 +17,6 @@ const app = new Vue({
 window.store = app.$store;
 window.router = app.$router;
 
-const thisTheme = localStorage.getItem("colorTheme") || "red";
+const thisTheme = localStorage.getItem("color") || "red";
 document.documentElement.setAttribute("data-theme", thisTheme);
 store.commit("dataStore/setDataState", false);

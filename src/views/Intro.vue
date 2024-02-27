@@ -11,7 +11,7 @@
           text="구글로 시작하기"
           @loginComplete="getData()"
         />
-        <ThemeButtons />
+        <ThemeButtons :ohlyBtns="false" />
       </template>
     </div>
   </div>
@@ -49,31 +49,27 @@ export default {
   },
   methods: {
     async getData() {
-      const q_acc = query(
-        collection(db, `Users/${this.userData.email}/Accounts`)
-      );
-      const q_card = query(
-        collection(db, `Users/${this.userData.email}/Cards`)
-      );
-      const q_accHis = query(
-        collection(db, "History_account"),
+      const q_his = query(
+        collection(db, "HISTORY"),
         where("email", "==", this.userData.email)
       );
-      const q_cardHis = query(
-        collection(db, "History_card"),
+      const q_acc = query(
+        collection(db, "INFO_account"),
+        where("email", "==", this.userData.email)
+      );
+      const q_card = query(
+        collection(db, "INFO_card"),
         where("email", "==", this.userData.email)
       );
 
       /* 초기 데이터 세팅 */
+      const snapshot_his = getDocs(q_his);
       const snapshot_acc = getDocs(q_acc);
       const snapshot_card = getDocs(q_card);
-      const snapshot_accHis = getDocs(q_accHis);
-      const snapshot_cardHis = getDocs(q_cardHis);
       const snapshotList = await Promise.all([
+        snapshot_his,
         snapshot_acc,
         snapshot_card,
-        snapshot_accHis,
-        snapshot_cardHis,
       ]);
       const snapshotDataList = snapshotList.map((snapshot) => {
         const list = [];
@@ -81,20 +77,16 @@ export default {
         return list;
       });
       this.$store.commit("dataStore/settingData", {
-        type: "acc",
+        type: "his",
         data: snapshotDataList[0],
       });
       this.$store.commit("dataStore/settingData", {
-        type: "card",
+        type: "acc",
         data: snapshotDataList[1],
       });
       this.$store.commit("dataStore/settingData", {
-        type: "accHis",
+        type: "card",
         data: snapshotDataList[2],
-      });
-      this.$store.commit("dataStore/settingData", {
-        type: "cardHis",
-        data: snapshotDataList[3],
       });
       this.$store.commit("dataStore/setDataState", true);
       localStorage.setItem(
@@ -103,6 +95,15 @@ export default {
       );
 
       /* 데이터 변경 감지 */
+      // eslint-disable-next-line no-unused-vars
+      const unsubCardHisList = onSnapshot(q_his, (querySnapshot) => {
+        const dataList = [];
+        querySnapshot.forEach((doc) => dataList.push(doc.data()));
+        this.$store.commit("dataStore/settingData", {
+          type: "his",
+          data: dataList,
+        });
+      });
       // eslint-disable-next-line no-unused-vars
       const unsubAccList = onSnapshot(q_acc, (querySnapshot) => {
         const dataList = [];
@@ -118,24 +119,6 @@ export default {
         querySnapshot.forEach((doc) => dataList.push(doc.data()));
         this.$store.commit("dataStore/settingData", {
           type: "card",
-          data: dataList,
-        });
-      });
-      // eslint-disable-next-line no-unused-vars
-      const unsubAccHisList = onSnapshot(q_accHis, (querySnapshot) => {
-        const dataList = [];
-        querySnapshot.forEach((doc) => dataList.push(doc.data()));
-        this.$store.commit("dataStore/settingData", {
-          type: "accHis",
-          data: dataList,
-        });
-      });
-      // eslint-disable-next-line no-unused-vars
-      const unsubCardHisList = onSnapshot(q_cardHis, (querySnapshot) => {
-        const dataList = [];
-        querySnapshot.forEach((doc) => dataList.push(doc.data()));
-        this.$store.commit("dataStore/settingData", {
-          type: "cardHis",
           data: dataList,
         });
       });

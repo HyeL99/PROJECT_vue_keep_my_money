@@ -1,6 +1,6 @@
 <template>
   <div class="themeButtons">
-    <p>테마 선택</p>
+    <p v-if="!ohlyBtns">테마 선택</p>
     <button
       v-for="(color, i) in colors"
       :key="i"
@@ -15,6 +15,9 @@
 <script>
 export default {
   name: "ThemeButtons",
+  props: {
+    ohlyBtns: Boolean,
+  },
   data() {
     const thisColor = document.documentElement.getAttribute("data-theme");
     return {

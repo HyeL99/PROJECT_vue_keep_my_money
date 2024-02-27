@@ -4,6 +4,7 @@
   --color-2: #{v.$color_red_2};
   --color-3: #{v.$color_red_3};
   --color-4: #{v.$color_red_4};
+  --color-4-op25: #{v.$color_red_4_op25};
 
   --color-red: #{v.$color_red_4};
   --color-indigo: #{v.$color_indigo_4};
@@ -15,6 +16,7 @@ html[data-theme="red"] {
   --color-2: #{v.$color_red_2};
   --color-3: #{v.$color_red_3};
   --color-4: #{v.$color_red_4};
+  --color-4-op25: #{v.$color_red_4_op25};
 }
 
 html[data-theme="blue"] {
@@ -22,6 +24,7 @@ html[data-theme="blue"] {
   --color-2: #{v.$color_blue_2};
   --color-3: #{v.$color_blue_3};
   --color-4: #{v.$color_blue_4};
+  --color-4-op25: #{v.$color_blue_4_op25};
 }
 
 html[data-theme="indigo"] {
@@ -29,6 +32,7 @@ html[data-theme="indigo"] {
   --color-2: #{v.$color_indigo_2};
   --color-3: #{v.$color_indigo_3};
   --color-4: #{v.$color_indigo_4};
+  --color-4-op25: #{v.$color_indigo_4_op25};
 }
 
 html[data-theme="green"] {
@@ -36,4 +40,5 @@ html[data-theme="green"] {
   --color-2: #{v.$color_green_2};
   --color-3: #{v.$color_green_3};
   --color-4: #{v.$color_green_4};
+  --color-4-op25: #{v.$color_green_4_op25};
 }

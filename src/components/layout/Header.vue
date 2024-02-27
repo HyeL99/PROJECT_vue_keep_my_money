@@ -3,21 +3,25 @@
     <button
       v-for="(item, i) in tabs"
       :key="i"
-      @click="$router.push({ name: item.name })"
+      @click="$router.push({ name: item.name }).catch(() => {})"
     >
       <ICON_account
+        :key="$route.name"
         :active="$route.name === 'account'"
         v-if="item.name === 'account'"
       />
       <ICON_calendar
+        :key="$route.name"
         :active="$route.name === 'calendar'"
         v-else-if="item.name === 'calendar'"
       />
       <ICON_manage
+        :key="$route.name"
         :active="$route.name === 'manage'"
         v-else-if="item.name === 'manage'"
       />
       <ICON_statistics
+        :key="$route.name"
         :active="$route.name === 'statistics'"
         v-else-if="item.name === 'statistics'"
       />

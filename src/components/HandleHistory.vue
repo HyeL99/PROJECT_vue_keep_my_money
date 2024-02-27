@@ -1,11 +1,22 @@
 <template>
-  <div class="card">
-    <div class="card-header">
-      <h2>21일의 수입/지출</h2>
-      <button>+</button>
-      <button>-</button>
+  <div class="popup">
+    <div class="card handleHistoryCard">
+      <div class="card-header">
+        <strong class="card-title">{{$moment(date).format("YYYY.MM.DD")}} 기록 추가</strong>
+        <div class="card-buttons">
+          <button @click="$emit('closePopup')">×</button>
+        </div>
+      </div>
+      <div>
+        <div>
+          <strong>분류</strong>
+          /* 분류 라벨작업부터 작업 시작 */
+          <input type="radio" name="kind" id="kind_1">
+          <input type="radio" name="kind" id="kind_2">
+        </div>
+
+      </div>
     </div>
-    <ul></ul>
   </div>
 </template>
 
@@ -14,9 +25,13 @@ export default {
   name: "HandleHistory",
   props: {
     date: String,
-    info: Object,
-  },/* 여기서부터 개발 시작 */
+  },
+  data(){
+    return {
+      historyParams: {
+        id: "hisorty"
+      },
+    };
+  },
 };
 </script>
-
-<style scoped></style>
