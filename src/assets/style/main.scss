@@ -1,5 +1,6 @@
 #app {
   color: var(--color-4);
+  min-width: 300px;
   .container {
   }
 }
@@ -136,6 +137,11 @@
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     grid-template-rows: 1rem repeat(6, 50px);
+    row-gap: 0.5rem;
+    .day {
+      border-bottom: 1px solid var(--color-4);
+      line-height: 1rem;
+    }
     .date {
       color: black;
       display: flex;
@@ -176,19 +182,11 @@
       font-weight: 900;
       .calendarDate {
         border-bottom: 1px solid var(--color-4);
-        &::after {
-          content: "today";
-          font-size: 10px;
-          position: absolute;
-          width: 30px;
-          left: calc(50% - 15px);
-          bottom: -12px;
-        }
       }
     }
     .active {
       &.today .calendarDate {
-        border: none;
+        border-color: transparent;
       }
       .calendarDate {
         color: #fff;
@@ -216,7 +214,7 @@
   left: 50%;
   transform: translateX(-50%);
   bottom: -1rem;
-  height: calc(100vh - 50px - 3.3rem - 1rem - 300px + 1rem);
+  height: calc(100vh - 50px - 3.3rem - 1rem - 300px - 3rem + 1rem);
   width: calc(80% + 2rem);
   max-width: calc(400px + 2rem);
   margin: 0 auto;
@@ -269,7 +267,7 @@
       }
       .detail {
         flex-grow: 1;
-        line-height: 1.8rem;
+        line-height: 2rem;
         color: #000;
       }
       .cost {
@@ -364,10 +362,70 @@ main {
   width: 100vw;
   height: 100vh;
   background-color: rgba(0,0,0,0.5);
+  min-width: 300px;
   .handleHistoryCard {
-    width: 80%;
+    width: 90%;
     max-width: 400px;
     margin: 5rem auto;
     background-color: #fff;
+    .handleHistoryCard-body {
+      text-align: end;
+      > button {
+        margin-top: 1rem;
+        background-color: var(--color-4);
+        color: #fff;
+        padding: 0.4rem 2rem;
+        border-radius: 5px;
+      }
+      > div {
+        display: grid;
+        grid-template-columns: 4.5rem 1fr 1fr;
+        column-gap: 0.5rem;
+        margin-top: 1rem;
+        align-items: center;
+        input, select {
+          width: 100%;
+        }
+        strong {text-align: start}
+        &:not(.kind) {
+          > *:not(strong) {
+            grid-column: 2/4;
+            padding: 0.5rem;
+            border-radius: 0.4rem;
+            border: 1px solid var(--color-4);
+          }
+        }
+        .category, .assetId {
+          position: relative;
+          &::before {
+            content: "";
+            position: absolute;
+            right: 0;
+            bottom: 0.5rem;
+            width: 0.5rem;
+            height: 0.5rem;
+            border: 1px solid var(--color-4)
+          }
+        }
+      }
+      .kind {
+        label {
+          display: inline-block;
+          width: 100%;
+          border-radius: 5px;
+          padding: 0.5rem;
+          text-align: center;
+          background-color: var(--color-4);
+          color: #fff;
+          &:not(.active) {
+            color: #a5a5a5;
+            background-color: #eee;
+          }
+        }
+        input {
+          display: none;
+        }
+      }
+    }
   }
 }

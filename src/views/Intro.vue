@@ -49,6 +49,10 @@ export default {
   },
   methods: {
     async getData() {
+      const q_ctg = query(
+        collection(db, "Settings"),
+        where("type", "==", "category")
+      );
       const q_his = query(
         collection(db, "HISTORY"),
         where("email", "==", this.userData.email)
@@ -66,10 +70,12 @@ export default {
       const snapshot_his = getDocs(q_his);
       const snapshot_acc = getDocs(q_acc);
       const snapshot_card = getDocs(q_card);
+      const snapshot_ctg = getDocs(q_ctg);
       const snapshotList = await Promise.all([
         snapshot_his,
         snapshot_acc,
         snapshot_card,
+        snapshot_ctg,
       ]);
       const snapshotDataList = snapshotList.map((snapshot) => {
         const list = [];
@@ -88,6 +94,10 @@ export default {
         type: "card",
         data: snapshotDataList[2],
       });
+      this.$store.commit("dataStore/settingData", {
+        type: "ctg",
+        data: snapshotDataList[3],
+      });
       this.$store.commit("dataStore/setDataState", true);
       localStorage.setItem(
         "color",
@@ -95,6 +105,15 @@ export default {
       );
 
       /* 데이터 변경 감지 */
+      // eslint-disable-next-line no-unused-vars
+      const unsubCategory = onSnapshot(q_ctg, (querySnapshot) => {
+        const dataList = [];
+        querySnapshot.forEach((doc) => dataList.push(doc.data()));
+        this.$store.commit("dataStore/settingData", {
+          type: "ctg",
+          data: dataList,
+        });
+      });
       // eslint-disable-next-line no-unused-vars
       const unsubCardHisList = onSnapshot(q_his, (querySnapshot) => {
         const dataList = [];

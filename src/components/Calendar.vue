@@ -1,6 +1,6 @@
 <template>
   <div class="calendarPlace">
-    <button>2024년 4월</button>
+    <button>{{ viewYear }}년 {{ viewMonth }}월</button>
     <div class="calendar">
       <div v-for="(day, i) in dayList" :key="`dayList_${i}`" class="day">
         {{ day }}
@@ -36,6 +36,9 @@ import { mapState } from "vuex";
 
 export default {
   name: "Calendar",
+  props: {
+    startDate: String,
+  },
   data() {
     return {
       dayList: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"],
@@ -46,15 +49,17 @@ export default {
       activeInfo: {},
       historys: {},
       historysTemp: {},
+      viewYear: this.$moment().format("YYYY"),
+      viewMonth: this.$moment().format("MM"),
     };
   },
   computed: {
     ...mapState("dataStore", ["historyList"]),
   },
   mounted() {
-    console.log("today", this.today);
     this.getDays(this.today);
     this.setHistory();
+    this.setActiveDate(this.startDate);
   },
   methods: {
     getDays(date) {

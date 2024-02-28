@@ -7,6 +7,7 @@ const state = {
   accountList: [],
   cardList: [],
   historyList: [],
+  categoryList: [],
   isSetData: false,
 };
 const getters = {};
@@ -26,6 +27,9 @@ const mutations = {
         break;
       case "his":
         state.historyList = data;
+        break;
+      case "ctg":
+        state.categoryList = data;
         break;
     }
   },

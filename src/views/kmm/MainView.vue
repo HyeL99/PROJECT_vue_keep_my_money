@@ -1,6 +1,11 @@
 <template>
   <main>
-    <Calendar @selectDate="selectDate" @unSelected="unSelectedDate" />
+    <Calendar
+      @selectDate="selectDate"
+      @unSelected="unSelectedDate"
+      :key="calendarLoadKey"
+      :startDate="activeDate"
+    />
     <ViewHistory
       v-if="openViewHistoryCard"
       :date="activeDate"
@@ -11,6 +16,7 @@
       :date="activeDate"
       v-if="openHandleHistoryCard"
       @closePopup="openHandleHistoryCard = false"
+      @complete="completeAddHistory"
     />
   </main>
 </template>
@@ -25,10 +31,11 @@ export default {
   components: { HandleHistory, ViewHistory, Calendar },
   data() {
     return {
-      activeDate: "",
+      activeDate: this.$moment().format("YYYYMMDD"),
       activeInfo: {},
       openViewHistoryCard: false,
       openHandleHistoryCard: false,
+      calendarLoadKey: 0,
     };
   },
   methods: {
@@ -41,6 +48,10 @@ export default {
       this.activeDate = "";
       this.activeInfo = {};
       this.openViewHistoryCard = false;
+    },
+    completeAddHistory() {
+      this.openHandleHistoryCard = false;
+      this.calendarLoadKey++;
     },
   },
 };
