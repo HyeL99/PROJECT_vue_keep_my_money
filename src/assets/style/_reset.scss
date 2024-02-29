@@ -6,6 +6,9 @@
   font-family: inherit;
   font-size: inherit;
   color: inherit;
+  &:focus-visible {
+    outline: none;
+  }
 }
 html, body, #app {
   width: 100%;

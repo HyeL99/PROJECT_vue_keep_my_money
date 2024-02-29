@@ -196,7 +196,7 @@
           position: absolute;
           z-index: -1;
           left: 0;
-          top: calc(-0.4rem + 1px);
+          top: calc(-0.4rem + 2px);
           width: 1.5rem;
           height: 1.5rem;
           border-radius: 0.2rem;
@@ -209,20 +209,34 @@
     }
   }
 }
+.calendarBottom {
+  overflow-y: auto;
+  height: calc(100vh - 50px - 3.3rem - 1rem - 300px - 3rem - 1rem);
+  border: 1px solid var(--color-4);
+  width: 90%;
+  max-width: 400px;
+  margin: 0 auto;
+}
 .slideCard {
   position: absolute;
+  z-index: 990;
+  background-color: #fff;
   left: 50%;
   transform: translateX(-50%);
   bottom: -1rem;
-  height: calc(100vh - 50px - 3.3rem - 1rem - 300px - 3rem + 1rem);
+
   width: calc(80% + 2rem);
   max-width: calc(400px + 2rem);
   margin: 0 auto;
+  &.viewHistoryCard {
+    height: calc(100vh - 50px - 3.3rem - 1rem - 300px - 3rem + 1rem);
+  }
 }
 .card {
   box-shadow: 0 0 3px 3px var(--color-4-op25);
   border-radius: 0.5rem;
   padding: 1rem;
+  background-color: #fff;
   .card-header {
     display: flex;
     grid-template-columns: auto 1.8rem 1.8rem;
@@ -244,6 +258,11 @@
         border-radius: 50%;
         font-size: 1.8rem;
         box-shadow: 1px 1px 3px 3px var(--color-4-op25);
+        svg {
+          width: 60%;
+          height: 60%;
+          vertical-align: middle;
+        }
       }
     }
   }
@@ -275,6 +294,111 @@
         &.green { color: var(--color-green) }
       }
     }
+    &.gridUl {
+      li {
+        display: grid;
+        grid-template-columns: 0.4rem 1fr;
+        column-gap: 5px;
+        .more {
+          grid-column: 2/3;
+          font-size: 0.8rem;
+          line-height: 0.9rem;
+        }
+      }
+    }
+  }
+}
+.popup {
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+  min-width: 300px;
+  .handleCard {
+    width: 90%;
+    max-width: 400px;
+    margin: 5rem auto;
+    .handleCard-body {
+      text-align: end;
+      > button {
+        margin-top: 1rem;
+        background-color: var(--color-4);
+        color: #fff;
+        padding: 0.4rem 2rem;
+        border-radius: 5px;
+      }
+      > div {
+        display: grid;
+        grid-template-columns: 4.5rem 1fr 1fr;
+        column-gap: 0.5rem;
+        margin-top: 1rem;
+        align-items: center;
+        &.long {
+          grid-template-columns: 6rem 1fr 1fr;
+        }
+        input, select {
+          width: 100%;
+        }
+        strong {text-align: start}
+        .clarify {
+          grid-column: 1/4;
+          text-align: start;
+          font-size: 0.8rem;
+          font-weight: 700;
+          padding-top: 0.5rem;
+          opacity: 0.8;
+        }
+        &:not(.typePart) {
+          > *:not(strong, svg, .clarify) {
+            grid-column: 2/4;
+            padding: 0.5rem;
+            border-radius: 0.4rem;
+            border: 1px solid var(--color-4);
+          }
+        }
+        &.selectPart{
+          position: relative;
+          select {
+            position: relative;
+            background-color: transparent;
+          }
+          svg {
+            position: absolute;
+            right: 1rem;
+            width: 0.8rem;
+            .thisColor {
+              fill: var(--color-4);
+            }
+          }
+        }
+      }
+      .typePart {
+        label {
+          display: inline-block;
+          width: 100%;
+          border-radius: 5px;
+          padding: 0.5rem;
+          text-align: center;
+          background-color: var(--color-4);
+          color: #fff;
+          &:not(.active) {
+            color: #a5a5a5;
+            background-color: #eee;
+          }
+        }
+        input {
+          display: none;
+        }
+      }
+    }
+  }
+  .handleAssetCard {
+    width: 90%;
+    max-width: 400px;
+    margin: 5rem auto;
   }
 }
 svg{
@@ -355,77 +479,4 @@ main {
     }
   }
 }
-.popup {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0,0,0,0.5);
-  min-width: 300px;
-  .handleHistoryCard {
-    width: 90%;
-    max-width: 400px;
-    margin: 5rem auto;
-    background-color: #fff;
-    .handleHistoryCard-body {
-      text-align: end;
-      > button {
-        margin-top: 1rem;
-        background-color: var(--color-4);
-        color: #fff;
-        padding: 0.4rem 2rem;
-        border-radius: 5px;
-      }
-      > div {
-        display: grid;
-        grid-template-columns: 4.5rem 1fr 1fr;
-        column-gap: 0.5rem;
-        margin-top: 1rem;
-        align-items: center;
-        input, select {
-          width: 100%;
-        }
-        strong {text-align: start}
-        &:not(.kind) {
-          > *:not(strong) {
-            grid-column: 2/4;
-            padding: 0.5rem;
-            border-radius: 0.4rem;
-            border: 1px solid var(--color-4);
-          }
-        }
-        .category, .assetId {
-          position: relative;
-          &::before {
-            content: "";
-            position: absolute;
-            right: 0;
-            bottom: 0.5rem;
-            width: 0.5rem;
-            height: 0.5rem;
-            border: 1px solid var(--color-4)
-          }
-        }
-      }
-      .kind {
-        label {
-          display: inline-block;
-          width: 100%;
-          border-radius: 5px;
-          padding: 0.5rem;
-          text-align: center;
-          background-color: var(--color-4);
-          color: #fff;
-          &:not(.active) {
-            color: #a5a5a5;
-            background-color: #eee;
-          }
-        }
-        input {
-          display: none;
-        }
-      }
-    }
-  }
-}
+

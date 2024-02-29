@@ -1,6 +1,6 @@
 <template>
   <div class="popup">
-    <div class="card handleHistoryCard">
+    <div class="card handleCard">
       <div class="card-header">
         <strong class="card-title"
           >{{ $moment(date).format("YYYY.MM.DD") }} 기록 추가</strong
@@ -9,33 +9,34 @@
           <button @click="$emit('closePopup')">×</button>
         </div>
       </div>
-      <div class="handleHistoryCard-body">
-        <div class="kind">
+      <div class="handleCard-body">
+        <div class="typePart">
           <strong>분류</strong>
           <!--/* 분류 라벨작업부터 작업 시작 */-->
-          <label for="kind_1" :class="historyParams.useCode ? 'active' : ''">
+          <label for="type_1" :class="historyParams.useCode ? 'active' : ''">
             지출
           </label>
-          <label for="kind_2" :class="historyParams.useCode ? '' : 'active'">
+          <label for="type_2" :class="historyParams.useCode ? '' : 'active'">
             수입
           </label>
           <input
             type="radio"
-            name="kind"
-            id="kind_1"
+            name="type"
+            id="type_1"
             v-model="historyParams.useCode"
             :value="true"
           />
           <input
             type="radio"
-            name="kind"
-            id="kind_2"
+            name="type"
+            id="type_2"
             v-model="historyParams.useCode"
             :value="false"
           />
         </div>
-        <div class="category">
+        <div class="selectPart">
           <strong>카테고리</strong>
+          <ICON_select_arrow />
           <select
             name="categorySelect"
             id="categorySelect"
@@ -47,20 +48,22 @@
             </option>
           </select>
         </div>
-        <div class="detail">
+        <div class="inputPart">
           <strong>설명</strong>
           <input type="text" v-model.trim="historyParams.detail" />
         </div>
-        <div class="cost">
+        <div class="inputPart">
           <strong>{{ historyParams.useCode ? "지출금액" : "수입금액" }}</strong>
           <input
             type="text"
             @change="changeCost"
+            @focus="focusCost"
             v-model="historyParams.cost"
           />
         </div>
-        <div class="assetId">
+        <div class="selectPart">
           <strong>결제수단</strong>
+          <ICON_select_arrow />
           <select
             name="assetIdSelect"
             id="assetIdSelect"
@@ -83,9 +86,11 @@ import { mapState } from "vuex";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { v4 as uuid_v4 } from "uuid";
+import ICON_select_arrow from "@/assets/svg/ICON_select_arrow.vue";
 
 export default {
   name: "HandleHistory",
+  components: { ICON_select_arrow },
   props: {
     date: String,
   },
@@ -107,12 +112,12 @@ export default {
     ...mapState("dataStore", ["cardList", "accountList", "categoryList"]),
     assetList() {
       const cards = this.cardList.map((t) => {
-        const item = Object.assign({}, t);
+        const item = this._.cloneDeep(t);
         item.name = "카드 - " + item.name;
         return item;
       });
       const accounts = this.accountList.map((t) => {
-        const item = Object.assign({}, t);
+        const item = this._.cloneDeep(t);
         item.name = "계좌 - " + item.name;
         return item;
       });
@@ -125,6 +130,9 @@ export default {
         e.target.value.replaceAll(/[^0-9]/g, "")
       ).toLocaleString("ko-KR");
     },
+    focusCost(e) {
+      this.historyParams.cost = e.target.value.replaceAll(/[^0-9]/g, "");
+    },
     async addHistory() {
       if (this.historyParams.categoryId === "") {
         alert("카테고리를 선택해주세요!");
@@ -134,7 +142,10 @@ export default {
         alert("설명을 입력해주세요!");
         return false;
       }
-      if (this.historyParams.cost === "") {
+      if (
+        this.historyParams.cost === "" ||
+        Number(this.historyParams.cost) === 0
+      ) {
         alert("지출금액을 입력해주세요!");
         return false;
       }
@@ -142,7 +153,7 @@ export default {
         alert("결제수단을 선택해주세요!");
         return false;
       }
-      const hisParams = Object.assign({}, this.historyParams);
+      const hisParams = this._.cloneDeep(this.historyParams);
       hisParams.cost = hisParams.cost.replaceAll(",", "");
       hisParams.id = "history_" + uuid_v4().replaceAll("-", "");
 
