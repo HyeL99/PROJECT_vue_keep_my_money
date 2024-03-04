@@ -7,8 +7,63 @@
       :history="calendarHistory"
       :days="calendarDays"
     />
-    <div class="calendarBottom">
-      <h2 class="main-header">이달의 소비</h2>
+    <div class="calendarBottom nonScroll">
+      <h2 class="main-header">{{ Number(viewMonth) }}월의 소비</h2>
+      <section>
+        <article>
+          <div class="articleHeader">
+            <span class="left">사용금액</span>
+            <h3>카드</h3>
+            <span class="right">목표금액</span>
+          </div>
+          <div v-for="(item, i) in cardList" :key="`card_${i}`" class="costBar">
+            <strong>{{ item.name }}</strong>
+            <div class="barContainer" v-if="assets[item.id]">
+              <span class="bnfCostBar"></span>
+              <strong class="bnfCost">{{ item.bnfCost | comma }}</strong>
+              <span
+                class="useCostBar"
+                :style="`width: calc(100% * ${assets[item.id].totalCost} / ${
+                  item.bnfCost
+                })`"
+              ></span>
+              <strong class="useCost">{{
+                assets[item.id].totalCost | comma
+              }}</strong>
+            </div>
+          </div>
+        </article>
+        <article>
+          <div class="articleHeader">
+            <span class="left">지출금액</span>
+            <h3>계좌</h3>
+            <span class="right">수입금액</span>
+          </div>
+          <div
+            v-for="(item, i) in accountList"
+            :key="`acc_${i}`"
+            class="costBar"
+          >
+            <strong>{{ item.name }}</strong>
+            <div class="barContainer" v-if="assets[item.id]">
+              <span class="bnfCostBar"></span>
+              <strong class="bnfCost">{{
+                assets[item.id].totalGetCost | comma
+              }}</strong>
+              <span
+                v-if="assets[item.id]"
+                class="useCostBar"
+                :style="`width: calc(100% * ${assets[item.id].totalUseCost} / ${
+                  assets[item.id].totalUseCost + assets[item.id].totalGetCost
+                })`"
+              ></span>
+              <strong class="useCost">{{
+                assets[item.id].totalUseCost | comma
+              }}</strong>
+            </div>
+          </div>
+        </article>
+      </section>
     </div>
     <ViewHistory
       v-if="openViewHistoryCard"
@@ -36,22 +91,35 @@ export default {
   name: "MainView",
   components: { HandleHistory, ViewHistory, Calendar },
   computed: {
-    ...mapState("dataStore", ["historyList"]),
+    ...mapState("dataStore", ["historyList", "accountList", "cardList"]),
   },
   data() {
     return {
       today: this.$moment().format("YYYYMMDD"),
+      // today: "20240212",
       calendarDays: [],
       activeDate: this.$moment().format("YYYYMMDD"),
+      // activeDate: "20240212",
       activeInfo: {},
       calendarHistory: {},
       calendarHistoryTemp: {},
       viewYear: this.$moment().format("YYYY"),
       viewMonth: this.$moment().format("MM"),
+      // viewMonth: "02",
       openViewHistoryCard: false,
       openHandleHistoryCard: false,
       calendarLoadKey: 0,
+      assets: {},
     };
+  },
+  filters: {
+    comma(val) {
+      if (typeof val != "undefined" && !isNaN(val)) {
+        return String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      } else {
+        return 0;
+      }
+    },
   },
   mounted() {
     this.openViewHistoryCard = false;
@@ -127,12 +195,47 @@ export default {
       this.calendarHistoryTemp = this._.cloneDeep(this.calendarHistory);
     },
     setHistory() {
+      this.assets = {};
+      this.accountList.forEach((item) => {
+        this.assets[item.id] = { list: [] };
+      });
+      this.cardList.forEach((item) => {
+        this.assets[item.id] = { list: [] };
+      });
       console.log("히스토리 세팅");
       this.calendarHistory = this._.cloneDeep(this.calendarHistoryTemp);
       this.historyList.forEach((item) => {
         if (item.date in this.calendarHistory) {
           this.calendarHistory[item.date].list.push(item);
         }
+        if (this.$moment(item.date).format("MM") === this.viewMonth) {
+          this.assets[item.assetId].list.push(item);
+        }
+      });
+
+      this.cardList.forEach((item) => {
+        let totalCost = 0;
+        this.assets[item.id].list.forEach((item) => {
+          if (item.useCode) {
+            totalCost += Number(item.cost);
+          } else {
+            totalCost -= Number(item.cost);
+          }
+        });
+        this.assets[item.id].totalCost = totalCost;
+      });
+      this.accountList.forEach((item) => {
+        let totalUseCost = 0;
+        let totalGetCost = 0;
+        this.assets[item.id].list.forEach((item) => {
+          if (item.useCode) {
+            totalUseCost += Number(item.cost);
+          } else {
+            totalGetCost += Number(item.cost);
+          }
+        });
+        this.assets[item.id].totalUseCost = totalUseCost;
+        this.assets[item.id].totalGetCost = totalGetCost;
       });
     },
     completeAddHistory() {

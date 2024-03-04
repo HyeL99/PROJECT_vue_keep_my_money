@@ -76,9 +76,13 @@
             type="text"
             @change="changeCost"
             v-model="assetParams.bnfCost"
+            @focus="focusInput"
+            @blur="changeCost"
           />
         </div>
-        <button @click="addAsset">추가</button>
+        <button @click="addAsset" v-if="mode === 'new'">추가</button>
+        <button @click="editAsset" v-if="mode === 'edit'">수정</button>
+        <button @click="deleteAsset" v-if="mode === 'edit'">삭제</button>
       </div>
     </div>
   </div>
@@ -93,6 +97,8 @@ export default {
   name: "HandleAsset",
   props: {
     type: String,
+    mode: String,
+    editProps: Object,
   },
   data() {
     return {
@@ -107,10 +113,25 @@ export default {
         account: "계좌번호 뒷자리 4자리",
         card: "카드번호 뒷자리 4자리",
       },
+      editPropsTemp: {},
     };
   },
   mounted() {
-    this.assetParams.type = this.type;
+    if (this.mode === "new") {
+      this.assetParams = {
+        type: this.type,
+        name: "",
+        number: "",
+        statementDate: 1,
+        bnfCost: "",
+      };
+    } else if (this.mode === "edit") {
+      this.assetParams = this._.cloneDeep(this.editProps);
+      this.assetParams.bnfCost = Number(
+        this.assetParams.bnfCost.replaceAll(/[^0-9]/g, "")
+      ).toLocaleString("ko-KR");
+      this.editPropsTemp = this._.cloneDeep(this.assetParams);
+    }
   },
   methods: {
     changeCost(e) {
@@ -121,9 +142,11 @@ export default {
     numberInput(e) {
       this.assetParams.number = e.target.value.substr(0, 4);
     },
-    async addAsset() {
+    focusInput() {
+      this.assetParams.bnfCost = this.assetParams.bnfCost.replaceAll(",", "");
+    },
+    checkValidAsset() {
       let params = this._.cloneDeep(this.assetParams);
-      params.email = this.$store.state.loginStore.userData.email;
       if (params.type === "account") {
         if (params.name === "") {
           alert("계좌명을 입력해주세요!");
@@ -137,15 +160,6 @@ export default {
           alert("계좌 구분번호는 4글자 입력해주세요!");
           return false;
         }
-        params.id = "account_" + uuid_v4().replaceAll("-", "");
-        const { id, email, name, number } = params;
-        await setDoc(doc(db, "INFO_account", params.id), {
-          id,
-          email,
-          name,
-          number,
-        });
-        this.$emit("complete");
       } else if (params.type === "card") {
         if (params.name === "") {
           alert("카드명을 입력해주세요!");
@@ -163,6 +177,27 @@ export default {
           alert("목표 혜택금액을 입력해주세요!");
           return false;
         }
+      }
+      return true;
+    },
+    async addAsset() {
+      let params = this._.cloneDeep(this.assetParams);
+      params.email = this.$store.state.loginStore.userData.email;
+      if (params.type === "account") {
+        const validCheck = this.checkValidAsset();
+        if (!validCheck) return false;
+        params.id = "account_" + uuid_v4().replaceAll("-", "");
+        const { id, email, name, number } = params;
+        await setDoc(doc(db, "INFO_account", params.id), {
+          id,
+          email,
+          name,
+          number,
+        });
+        this.$emit("complete");
+      } else if (params.type === "card") {
+        const validCheck = this.checkValidAsset();
+        if (!validCheck) return false;
         params.bnfCost = params.bnfCost.replaceAll(",", "");
         params.id = "card_" + uuid_v4().replaceAll("-", "");
         const { id, email, name, number, statementDate, bnfCost } = params;
@@ -175,6 +210,40 @@ export default {
           bnfCost,
         });
         this.$emit("complete");
+      }
+    },
+    async editAsset() {
+      let params = this._.cloneDeep(this.assetParams);
+      params.email = this.$store.state.loginStore.userData.email;
+      const validCheck = this.checkValidAsset();
+      if (!validCheck) return false;
+      const isEqual = this._.isEqual(this.editPropsTemp, this.assetParams);
+      console.log("equal? ", isEqual);
+      if (isEqual) {
+        alert("수정된 사항이 없습니다.");
+      } else {
+        params.bnfCost = params.bnfCost.replaceAll(",", "");
+        const { id, email, name, number, statementDate, bnfCost } = params;
+        await setDoc(doc(db, "INFO_card", params.id), {
+          id,
+          email,
+          name,
+          number,
+          statementDate,
+          bnfCost,
+        });
+        alert("수정이 완료되었습니다.");
+        this.$emit("complete");
+      }
+    },
+    async deleteAsset() {
+      const rst = confirm(
+        "자산를 삭제하면 해당 자산과 관련된 모든 사용내역이 삭제되며,\n복구할 수 없습니다.\n정말 삭제하시겠습니까?"
+      );
+      if (rst) {
+        console.log("삭제");
+      } else {
+        alert("삭제가 취소되었습니다.");
       }
     },
   },

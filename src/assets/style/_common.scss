@@ -17,3 +17,11 @@ html {
     font-weight: 700;
   }
 }
+
+.nonScroll {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+  }
+}
