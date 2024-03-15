@@ -224,7 +224,7 @@ export default {
       if (isEqual) {
         alert("수정된 사항이 없습니다.");
       } else {
-        if(this.assetParams.type === "card") {
+        if (this.assetParams.type === "card") {
           params.bnfCost = params.bnfCost.replaceAll(",", "");
           const { id, email, name, number, statementDate, bnfCost } = params;
           await setDoc(doc(db, "INFO_card", params.id), {
