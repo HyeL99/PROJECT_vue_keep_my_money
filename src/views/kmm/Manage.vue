@@ -9,10 +9,12 @@
             <button @click="openAssetCard('account')">+</button>
           </div>
         </div>
-        <ul v-if="accountList.length > 0">
+        <ul v-if="accountList.length > 0" class="gridUl">
           <li v-for="(item, i) in accountList" :key="`acc_${i}`">
-            <span class="card-dot"></span>
-            <span class="detail">{{ item.name }} ({{ item.number }})</span>
+            <button @click="editAssetCard(item, 'account')">
+              <span class="card-dot"></span>
+              <span class="detail">{{ item.name }} ({{ item.number }})</span>
+            </button>
           </li>
         </ul>
       </div>
@@ -25,7 +27,7 @@
         </div>
         <ul v-if="cardList.length > 0" class="gridUl">
           <li v-for="(item, i) in cardList" :key="`card_${i}`">
-            <button @click="editAssetCard(item, 'card')">
+            <button @click="editAssetCard(item, 'card')" class="card-button">
               <span class="card-dot"></span>
               <span class="detail">{{ item.name }} ({{ item.number }})</span>
               <span class="more">목표사용금액 {{ item.bnfCost | comma }}</span>

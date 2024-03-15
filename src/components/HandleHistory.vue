@@ -1,6 +1,6 @@
 <template>
   <div class="popup">
-    <div class="card handleCard">
+    <div class="card inner handleCard">
       <div class="card-header">
         <strong class="card-title"
           >{{ $moment(date).format("YYYY.MM.DD") }} 기록 추가</strong
@@ -76,6 +76,8 @@
           </select>
         </div>
         <button @click="addHistory">추가</button>
+        <button @click="editHistory" v-if="mode === 'edit'">수정</button>
+        <button @click="deleteHistory" v-if="mode === 'edit'">삭제</button>
       </div>
     </div>
   </div>
@@ -93,6 +95,8 @@ export default {
   components: { ICON_select_arrow },
   props: {
     date: String,
+    mode: String,
+    editProps: Object,
   },
   data() {
     return {
@@ -106,6 +110,7 @@ export default {
         date: this.date,
         email: this.$store.state.loginStore.userData.email,
       },
+      editHistoryTemp: {},
     };
   },
   computed: {
@@ -113,16 +118,34 @@ export default {
     assetList() {
       const cards = this.cardList.map((t) => {
         const item = this._.cloneDeep(t);
-        item.name = "카드 - " + item.name;
+        item.name = `카드 - ${item.name}(${item.number})`;
         return item;
       });
       const accounts = this.accountList.map((t) => {
         const item = this._.cloneDeep(t);
-        item.name = "계좌 - " + item.name;
+        item.name = `계좌 - ${item.name}(${item.number})`;
         return item;
       });
       return [].concat(cards, accounts);
     },
+  },
+  mounted() {
+    console.log(this.mode);
+    if (this.mode === "new") {
+      this.historyParams = {
+        id: "history",
+        useCode: true,
+        detail: "",
+        cost: "",
+        assetId: "",
+        categoryId: "",
+        date: this._.cloneDeep(this.date),
+        email: this.$store.state.loginStore.userData.email,
+      };
+    } else if (this.mode === "edit") {
+      this.historyParams = this._.cloneDeep(this.editProps);
+      this.editHistoryTemp = this._.cloneDeep(this.editProps);
+    }
   },
   methods: {
     changeCost(e) {
@@ -160,6 +183,8 @@ export default {
       await setDoc(doc(db, "HISTORY", hisParams.id), hisParams);
       this.$emit("complete");
     },
+    editHistory() {},
+    deleteHistory() {},
   },
 };
 </script>

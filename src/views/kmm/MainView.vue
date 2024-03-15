@@ -7,7 +7,7 @@
       :history="calendarHistory"
       :days="calendarDays"
     />
-    <div class="calendarBottom nonScroll">
+    <div class="calendarBottom nonScroll inner">
       <h2 class="main-header">{{ Number(viewMonth) }}월의 소비</h2>
       <section>
         <article>
@@ -17,7 +17,7 @@
             <span class="right">목표금액</span>
           </div>
           <div v-for="(item, i) in cardList" :key="`card_${i}`" class="costBar">
-            <strong>{{ item.name }}</strong>
+            <strong>{{ item.name }} ({{ item.number }})</strong>
             <div class="barContainer" v-if="assets[item.id]">
               <span class="bnfCostBar"></span>
               <strong class="bnfCost">{{ item.bnfCost | comma }}</strong>
@@ -44,7 +44,7 @@
             :key="`acc_${i}`"
             class="costBar"
           >
-            <strong>{{ item.name }}</strong>
+            <strong>{{ item.name }} ({{ item.number }})</strong>
             <div class="barContainer" v-if="assets[item.id]">
               <span class="bnfCostBar"></span>
               <strong class="bnfCost">{{
@@ -71,11 +71,21 @@
       :info="activeInfo"
       @openHandlePopup="openHandleHistoryCard = true"
       @closeViewHistory="closeViewHistory"
+      @openEditPopup="openEditPopup"
     />
     <HandleHistory
       v-if="openHandleHistoryCard"
       :date="activeDate"
+      mode="new"
       @closePopup="openHandleHistoryCard = false"
+      @complete="completeAddHistory"
+    />
+    <HandleHistory
+      v-if="openEditHistoryCard"
+      :date="activeDate"
+      :edit-props="editHistoryProps"
+      mode="edit"
+      @closePopup="openEditHistoryCard = false"
       @complete="completeAddHistory"
     />
   </main>
@@ -108,8 +118,10 @@ export default {
       // viewMonth: "02",
       openViewHistoryCard: false,
       openHandleHistoryCard: false,
+      openEditHistoryCard: false,
       calendarLoadKey: 0,
       assets: {},
+      editHistoryProps: {},
     };
   },
   filters: {
@@ -128,6 +140,10 @@ export default {
     this.setHistory();
   },
   methods: {
+    openEditPopup(props) {
+      this.editHistoryProps = this._.cloneDeep(props);
+      this.openEditHistoryCard = true;
+    },
     getDays(date) {
       const days = [];
       const thisDay = this.$moment(date);

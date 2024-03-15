@@ -15,14 +15,16 @@
     </div>
     <ul v-if="info && info.list.length > 0">
       <li v-for="(item, i) in info.list" :key="i">
-        <span :class="`card-dot ${item.useCode ? 'red' : 'green'}`">{{
-          item.useCode ? "red" : "green"
-        }}</span>
-        <span class="detail">{{ item.detail }}</span>
-        <span v-if="item.useCode" class="cost red">
-          - {{ item.cost | comma }}
-        </span>
-        <span v-else class="cost green">+ {{ item.cost | comma }}</span>
+        <button @click="$emit('openEditPopup', item)">
+          <span :class="`card-dot ${item.useCode ? 'red' : 'green'}`">{{
+            item.useCode ? "red" : "green"
+          }}</span>
+          <span class="detail">{{ item.detail }}</span>
+          <span v-if="item.useCode" class="cost red">
+            - {{ item.cost | comma }}
+          </span>
+          <span v-else class="cost green">+ {{ item.cost | comma }}</span>
+        </button>
       </li>
     </ul>
   </div>

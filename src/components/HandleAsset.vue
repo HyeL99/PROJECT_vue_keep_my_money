@@ -1,6 +1,6 @@
 <template>
   <div class="popup">
-    <div class="card handleCard">
+    <div class="card inner handleCard">
       <div class="card-header">
         <h2 class="card-title">자산 추가</h2>
         <div class="card-buttons">
@@ -127,9 +127,11 @@ export default {
       };
     } else if (this.mode === "edit") {
       this.assetParams = this._.cloneDeep(this.editProps);
-      this.assetParams.bnfCost = Number(
-        this.assetParams.bnfCost.replaceAll(/[^0-9]/g, "")
-      ).toLocaleString("ko-KR");
+      if (this.assetParams.type === "card") {
+        this.assetParams.bnfCost = Number(
+          this.assetParams.bnfCost.replaceAll(/[^0-9]/g, "")
+        ).toLocaleString("ko-KR");
+      }
       this.editPropsTemp = this._.cloneDeep(this.assetParams);
     }
   },
@@ -222,18 +224,30 @@ export default {
       if (isEqual) {
         alert("수정된 사항이 없습니다.");
       } else {
-        params.bnfCost = params.bnfCost.replaceAll(",", "");
-        const { id, email, name, number, statementDate, bnfCost } = params;
-        await setDoc(doc(db, "INFO_card", params.id), {
-          id,
-          email,
-          name,
-          number,
-          statementDate,
-          bnfCost,
-        });
-        alert("수정이 완료되었습니다.");
-        this.$emit("complete");
+        if(this.assetParams.type === "card") {
+          params.bnfCost = params.bnfCost.replaceAll(",", "");
+          const { id, email, name, number, statementDate, bnfCost } = params;
+          await setDoc(doc(db, "INFO_card", params.id), {
+            id,
+            email,
+            name,
+            number,
+            statementDate,
+            bnfCost,
+          });
+          alert("수정이 완료되었습니다.");
+          this.$emit("complete");
+        } else if (this.assetParams.type === "account") {
+          const { id, email, name, number } = params;
+          await setDoc(doc(db, "INFO_account", params.id), {
+            id,
+            email,
+            name,
+            number,
+          });
+          alert("수정이 완료되었습니다.");
+          this.$emit("complete");
+        }
       }
     },
     async deleteAsset() {

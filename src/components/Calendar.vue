@@ -1,5 +1,5 @@
 <template>
-  <div class="calendarPlace">
+  <div class="inner calendarPlace">
     <button>{{ viewYear }}년 {{ viewMonth }}월</button>
     <template v-if="history">
       <div class="calendar">
