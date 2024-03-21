@@ -22,7 +22,7 @@ export default {
     const thisColor = document.documentElement.getAttribute("data-theme");
     return {
       thisColor: thisColor,
-      colors: ["red", "indigo", "green", "blue"],
+      colors: ["red", "purple", "blue", "green", "black"],
       actBtnIndex: 0,
     };
   },

@@ -108,6 +108,7 @@ export default {
         number: "",
         statementDate: 1,
         bnfCost: "",
+        email: "",
       },
       placeholder: {
         account: "계좌번호 뒷자리 4자리",
@@ -124,6 +125,7 @@ export default {
         number: "",
         statementDate: 1,
         bnfCost: "",
+        email: this.$store.state.loginStore.userData.email,
       };
     } else if (this.mode === "edit") {
       this.assetParams = this._.cloneDeep(this.editProps);
@@ -184,7 +186,6 @@ export default {
     },
     async addAsset() {
       let params = this._.cloneDeep(this.assetParams);
-      params.email = this.$store.state.loginStore.userData.email;
       if (params.type === "account") {
         const validCheck = this.checkValidAsset();
         if (!validCheck) return false;
@@ -216,7 +217,6 @@ export default {
     },
     async editAsset() {
       let params = this._.cloneDeep(this.assetParams);
-      params.email = this.$store.state.loginStore.userData.email;
       const validCheck = this.checkValidAsset();
       if (!validCheck) return false;
       const isEqual = this._.isEqual(this.editPropsTemp, this.assetParams);

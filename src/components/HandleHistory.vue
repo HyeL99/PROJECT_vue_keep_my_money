@@ -57,6 +57,7 @@
           <input
             type="text"
             @change="changeCost"
+            @blur="changeCost"
             @focus="focusCost"
             v-model="historyParams.cost"
           />
@@ -75,7 +76,7 @@
             </option>
           </select>
         </div>
-        <button @click="addHistory">추가</button>
+        <button @click="addHistory" v-if="mode === 'new'">추가</button>
         <button @click="editHistory" v-if="mode === 'edit'">수정</button>
         <button @click="deleteHistory" v-if="mode === 'edit'">삭제</button>
       </div>
@@ -108,7 +109,7 @@ export default {
         assetId: "",
         categoryId: "",
         date: this.date,
-        email: this.$store.state.loginStore.userData.email,
+        email: "",
       },
       editHistoryTemp: {},
     };
@@ -144,7 +145,10 @@ export default {
       };
     } else if (this.mode === "edit") {
       this.historyParams = this._.cloneDeep(this.editProps);
-      this.editHistoryTemp = this._.cloneDeep(this.editProps);
+      this.historyParams.cost = Number(
+        this.historyParams.cost.replaceAll(/[^0-9]/g, "")
+      ).toLocaleString("ko-KR");
+      this.editHistoryTemp = this._.cloneDeep(this.historyParams);
     }
   },
   methods: {
@@ -156,26 +160,29 @@ export default {
     focusCost(e) {
       this.historyParams.cost = e.target.value.replaceAll(/[^0-9]/g, "");
     },
-    async addHistory() {
-      if (this.historyParams.categoryId === "") {
+    checkValidHistory() {
+      let params = this._.cloneDeep(this.historyParams);
+      if (params.categoryId === "") {
         alert("카테고리를 선택해주세요!");
         return false;
       }
-      if (this.historyParams.detail === "") {
+      if (params.detail === "") {
         alert("설명을 입력해주세요!");
         return false;
       }
-      if (
-        this.historyParams.cost === "" ||
-        Number(this.historyParams.cost) === 0
-      ) {
+      if (params.cost === "" || Number(params.cost) === 0) {
         alert("지출금액을 입력해주세요!");
         return false;
       }
-      if (this.historyParams.assetId === "") {
+      if (params.assetId === "") {
         alert("결제수단을 선택해주세요!");
         return false;
       }
+      return true;
+    },
+    async addHistory() {
+      const validCheck = this.checkValidHistory();
+      if (!validCheck) return false;
       const hisParams = this._.cloneDeep(this.historyParams);
       hisParams.cost = hisParams.cost.replaceAll(",", "");
       hisParams.id = "history_" + uuid_v4().replaceAll("-", "");
@@ -183,7 +190,21 @@ export default {
       await setDoc(doc(db, "HISTORY", hisParams.id), hisParams);
       this.$emit("complete");
     },
-    editHistory() {},
+    async editHistory() {
+      const validCheck = this.checkValidHistory();
+      if (!validCheck) return false;
+      let params = this._.cloneDeep(this.historyParams);
+      const isEqual = this._.isEqual(this.historyParams, this.editHistoryTemp);
+      console.log("equal? ", isEqual);
+      if (isEqual) {
+        alert("수정된 사항이 없습니다.");
+      } else {
+        params.cost = params.cost.replaceAll(",", "");
+        await setDoc(doc(db, "HISTORY", params.id), params);
+        alert("수정이 완료되었습니다.");
+        this.$emit("complete");
+      }
+    },
     deleteHistory() {},
   },
 };

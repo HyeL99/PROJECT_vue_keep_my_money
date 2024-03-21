@@ -7,9 +7,10 @@
   --color-4-op25: #{v.$color_red_4_op25};
 
   --color-red: #{v.$color_red_4};
-  --color-indigo: #{v.$color_indigo_4};
+  --color-black: #{v.$color_black_4};
   --color-blue: #{v.$color_blue_4};
   --color-green: #{v.$color_green_4};
+  --color-purple: #{v.$color_purple_4};
 }
 html[data-theme="red"] {
   --color-1: #{v.$color_red_1};
@@ -27,12 +28,12 @@ html[data-theme="blue"] {
   --color-4-op25: #{v.$color_blue_4_op25};
 }
 
-html[data-theme="indigo"] {
-  --color-1: #{v.$color_indigo_1};
-  --color-2: #{v.$color_indigo_2};
-  --color-3: #{v.$color_indigo_3};
-  --color-4: #{v.$color_indigo_4};
-  --color-4-op25: #{v.$color_indigo_4_op25};
+html[data-theme="black"] {
+  --color-1: #{v.$color_black_1};
+  --color-2: #{v.$color_black_2};
+  --color-3: #{v.$color_black_3};
+  --color-4: #{v.$color_black_4};
+  --color-4-op25: #{v.$color_black_4_op25};
 }
 
 html[data-theme="green"] {
@@ -41,4 +42,12 @@ html[data-theme="green"] {
   --color-3: #{v.$color_green_3};
   --color-4: #{v.$color_green_4};
   --color-4-op25: #{v.$color_green_4_op25};
+}
+
+html[data-theme="purple"] {
+  --color-1: #{v.$color_purple_1};
+  --color-2: #{v.$color_purple_2};
+  --color-3: #{v.$color_purple_3};
+  --color-4: #{v.$color_purple_4};
+  --color-4-op25: #{v.$color_purple_4_op25};
 }

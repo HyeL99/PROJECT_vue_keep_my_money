@@ -86,7 +86,7 @@
       :edit-props="editHistoryProps"
       mode="edit"
       @closePopup="openEditHistoryCard = false"
-      @complete="completeAddHistory"
+      @complete="completeEditHistory"
     />
   </main>
 </template>
@@ -218,7 +218,6 @@ export default {
       this.cardList.forEach((item) => {
         this.assets[item.id] = { list: [] };
       });
-      console.log("히스토리 세팅");
       this.calendarHistory = this._.cloneDeep(this.calendarHistoryTemp);
       this.historyList.forEach((item) => {
         if (item.date in this.calendarHistory) {
@@ -259,6 +258,11 @@ export default {
       this.activeInfo = this.calendarHistory[this.activeDate];
       this.openHandleHistoryCard = false;
     },
+    completeEditHistory() {
+      this.setHistory();
+      this.activeInfo = this.calendarHistory[this.activeDate];
+      this.openEditHistoryCard = false;
+    },
     closeViewHistory() {
       this.activeDate = "";
       this.activeInfo = {};
@@ -273,6 +277,7 @@ export default {
         this.activeDate = date;
         this.activeInfo = this.calendarHistory[date];
         this.openViewHistoryCard = true;
+        console.log(this.activeInfo);
       }
     },
   },

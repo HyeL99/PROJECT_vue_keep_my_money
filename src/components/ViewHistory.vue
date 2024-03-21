@@ -4,18 +4,12 @@
       <h2 class="card-title">{{ $moment(date).format("DD일") }}의 수입/지출</h2>
       <div class="card-buttons">
         <button @click="$emit('openHandlePopup')">+</button>
-        <button
-          @click="$emit('openHandlePopup')"
-          v-if="info && info.list.length > 0"
-        >
-          <ICON_edit />
-        </button>
         <button @click="$emit('closeViewHistory')">×</button>
       </div>
     </div>
-    <ul v-if="info && info.list.length > 0">
+    <ul v-if="info && info.list.length > 0" class="gridUl">
       <li v-for="(item, i) in info.list" :key="i">
-        <button @click="$emit('openEditPopup', item)">
+        <button @click="$emit('openEditPopup', item)" class="grid_3">
           <span :class="`card-dot ${item.useCode ? 'red' : 'green'}`">{{
             item.useCode ? "red" : "green"
           }}</span>
@@ -24,6 +18,11 @@
             - {{ item.cost | comma }}
           </span>
           <span v-else class="cost green">+ {{ item.cost | comma }}</span>
+          <span class="more">
+            {{ ctgObj[item.categoryId].name }} |
+            {{ assetObj[item.assetId].name }}
+            ({{ assetObj[item.assetId].number }})
+          </span>
         </button>
       </li>
     </ul>
@@ -31,14 +30,33 @@
 </template>
 
 <script>
-import ICON_edit from "@/assets/svg/ICON_edit.vue";
+import { mapState } from "vuex";
 
 export default {
   name: "ViewHistory",
-  components: { ICON_edit },
   props: {
     date: String,
     info: Object,
+  },
+  data() {
+    return {
+      ctgObj: {},
+      assetObj: {},
+    };
+  },
+  computed: {
+    ...mapState("dataStore", ["categoryList", "cardList", "accountList"]),
+  },
+  created() {
+    this.categoryList.forEach((item) => {
+      this.ctgObj[item.id] = { name: item.name };
+    });
+    this.cardList.forEach((item) => {
+      this.assetObj[item.id] = { name: item.name, number: item.number };
+    });
+    this.accountList.forEach((item) => {
+      this.assetObj[item.id] = { name: item.name, number: item.number };
+    });
   },
   filters: {
     comma(val) {
