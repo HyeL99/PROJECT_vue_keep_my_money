@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div class="inner manageInner">
+    <div class="inner manageInner nonScroll">
       <h2 class="main-header">자산관리</h2>
       <div class="card manage-card">
         <div class="card-header">

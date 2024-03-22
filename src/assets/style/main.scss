@@ -1,8 +1,6 @@
 #app {
   color: var(--color-4);
   min-width: 300px;
-  .container {
-  }
 }
 .secessionPage {
   text-align: center;
@@ -43,6 +41,54 @@
        }
      }
    }
+}
+.statisticsPage {
+  padding-top: 1rem;
+  .inner {
+    height: 100%;
+    overflow-y: auto;
+    padding-bottom: 1.5rem;
+  }
+  .card {
+    position: relative;
+    width: calc(100% - 10px);
+    margin: 5px auto 0;
+    .main-header {
+      padding: 0;
+      white-space: nowrap;
+      strong {
+        margin-right: 0.5rem;
+      }
+      span {
+        font-size: 0.75rem;
+        strong {
+          margin-right: 0.2rem;
+        }
+      }
+    }
+  }
+  .statsSrchBtn {
+    display: block;
+    width: 100%;
+    background-color: var(--color-4-op25);
+    margin: 1rem auto;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+  }
+  .noHisCard {
+    p {
+      width: 100%;
+      text-align: center;
+    }
+  }
+}
+.manageInner {
+  height: 100%;
+  overflow-y: auto;
+  .card {
+    width: calc(100% - 10px);
+    margin: 0 auto;
+  }
 }
 .introPage {
   text-align: center;
@@ -562,4 +608,6 @@ main {
     }
   }
 }
-
+.chartPlace {
+  margin: 1rem 0;
+}

@@ -131,7 +131,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.mode);
     if (this.mode === "new") {
       this.historyParams = {
         id: "history",
@@ -195,7 +194,6 @@ export default {
       if (!validCheck) return false;
       let params = this._.cloneDeep(this.historyParams);
       const isEqual = this._.isEqual(this.historyParams, this.editHistoryTemp);
-      console.log("equal? ", isEqual);
       if (isEqual) {
         alert("수정된 사항이 없습니다.");
       } else {

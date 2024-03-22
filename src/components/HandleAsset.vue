@@ -220,7 +220,6 @@ export default {
       const validCheck = this.checkValidAsset();
       if (!validCheck) return false;
       const isEqual = this._.isEqual(this.editPropsTemp, this.assetParams);
-      console.log("equal? ", isEqual);
       if (isEqual) {
         alert("수정된 사항이 없습니다.");
       } else {
@@ -255,7 +254,7 @@ export default {
         "자산를 삭제하면 해당 자산과 관련된 모든 사용내역이 삭제되며,\n복구할 수 없습니다.\n정말 삭제하시겠습니까?"
       );
       if (rst) {
-        console.log("삭제");
+        console.log("삭제 기능 구현 필요");
       } else {
         alert("삭제가 취소되었습니다.");
       }

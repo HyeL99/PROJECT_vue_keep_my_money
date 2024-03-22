@@ -277,7 +277,6 @@ export default {
         this.activeDate = date;
         this.activeInfo = this.calendarHistory[date];
         this.openViewHistoryCard = true;
-        console.log(this.activeInfo);
       }
     },
   },

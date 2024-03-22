@@ -1,10 +1,29 @@
 <template>
-  <main>
-    <div class="inner">
-      <h2 class="main-header">사용통계</h2>
-      <DoughnutChart :options="chartOption" :data="chartData" />
-      <div>3월</div>
-      <div class="card">
+  <main class="statisticsPage">
+    <div class="inner nonScroll">
+      <div class="topPlace">
+        <div class="card">
+          <h2 class="main-header">
+            <strong>사용통계</strong>
+            <span>
+              <strong>|</strong>
+              {{ srchStartDate | date }} ~ {{ srchEndDate | date }}
+            </span>
+          </h2>
+          <!--          <h3>-->
+          <!--            <strong>통계 기준일 | {{ userData.statsDate }}일</strong>-->
+          <!--            <button>수정</button>-->
+          <!--          </h3>-->
+        </div>
+      </div>
+      <button class="statsSrchBtn">조회기간 수정</button>
+      <DoughnutChart
+        v-if="this.chartData.datasets[0].data.length > 0"
+        :options="chartOption"
+        :data="chartData"
+        class="chartPlace"
+      />
+      <div class="card" v-if="this.chartData.datasets[0].data.length > 0">
         <div class="card-header">
           <h3 class="card-title">사용 금액</h3>
         </div>
@@ -19,6 +38,14 @@
               <span>{{ item.totalCost | comma }}원</span>
             </li>
           </template>
+        </ul>
+      </div>
+      <div class="card noHisCard" v-else>
+        <ul class="gridUl">
+          <li>
+            <span class="card-dot"></span>
+            <span class="detail">사용 내역 없음</span>
+          </li>
         </ul>
       </div>
     </div>
@@ -36,6 +63,8 @@ export default {
     return {
       today: this.$moment().format("YYYYMMDD"),
       thisMonth: this.$moment().format("MM"),
+      srchStartDate: "",
+      srchEndDate: "",
       backgroundColor: {
         red: [
           "#FF6666",
@@ -182,15 +211,39 @@ export default {
         return 0;
       }
     },
+    date(val) {
+      return val.replace(/(\d{4})(\d{2})(\d{2})/g, "$1.$2.$3");
+    },
   },
   computed: {
     ...mapState("dataStore", ["historyList", "categoryList"]),
+    ...mapState("loginStore", ["userData"]),
   },
   mounted() {
+    this.srchEndDate = this.$moment().format("YYYYMMDD");
+    const todayDate = this.$moment(this.srchEndDate).date();
+    if (this.userData.statsDate <= todayDate) {
+      this.srchStartDate = this.$moment(this.srchEndDate).format(
+        `YYYYMM${this.userData.statsDate}`
+      );
+    } else {
+      const lastMonthDate = this.$moment(this.srchEndDate).subtract(1, "month");
+      if (lastMonthDate.daysInMonth() < this.userData.statsDate) {
+        this.srchStartDate = lastMonthDate.format(
+          `YYYYMM${lastMonthDate.daysInMonth()}`
+        );
+      } else {
+        this.srchStartDate = lastMonthDate.format(
+          `YYYYMM${this.userData.statsDate}`
+        );
+      }
+    }
+
     this.setChartData();
   },
   methods: {
     setChartData() {
+      console.log("실행");
       const categorys = {};
       const ctgList = [];
       this.categoryList.forEach((item) => {
@@ -198,7 +251,12 @@ export default {
         ctgList.push({ id: item.id, name: item.name, totalCost: 0 });
       });
       this.historyList.forEach((item) => {
-        if (this.$moment(item.date).format("MM") === this.thisMonth) {
+        if (
+          this.$moment(item.date).isBetween(
+            this.srchStartDate,
+            this.srchEndDate
+          )
+        ) {
           if (item.useCode) {
             categorys[item.categoryId].totalCost += Number(item.cost);
           } else {
@@ -217,6 +275,7 @@ export default {
       this.chartData.datasets[0].data = this.chartDataList.map(
         (item) => item.totalCost
       );
+      console.log(this.chartData.datasets[0].data);
     },
   },
 };
