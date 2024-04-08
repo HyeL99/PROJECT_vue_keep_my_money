@@ -44,7 +44,7 @@
 }
 .statisticsPage {
   padding-top: 1rem;
-  .inner {
+  > .inner {
     height: 100%;
     overflow-y: auto;
     padding-bottom: 1.5rem;
@@ -53,9 +53,24 @@
     position: relative;
     width: calc(100% - 10px);
     margin: 5px auto 0;
-    .main-header {
+    .header-template {
       padding: 0;
       white-space: nowrap;
+      &.subTitle {
+        font-size: 0.8rem;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        span strong {
+          margin-left: 0.9rem;
+        }
+        button {
+          float: right;
+          background-color: var(--color-1);
+          padding: 0.2rem 0.5rem;
+          border-radius: 0.2rem;
+        }
+      }
       strong {
         margin-right: 0.5rem;
       }
@@ -174,9 +189,46 @@
   font-size: 0.8rem;
   text-align: center;
   border-radius: 0.5rem;
-  > button {
-    padding: 1rem 2rem;
-    font-size: 1.3rem;
+  .calTopBtns {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    column-gap: 1rem;
+    padding: 0 1rem;
+    align-items: center;
+    position: relative;
+    > button {
+      padding: 1rem 0;
+      font-size: 1.3rem;
+      &.prevBtn, &.nextBtn {
+        font-size: 0;
+        padding: 0;
+        &::before {
+          content: "";
+          box-sizing: content-box;
+          display: block;
+          width: 10px;
+          height: 10px;
+          border-top: 4px solid var(--color-4);
+          border-left: 4px solid var(--color-4);
+          border-radius: 0.2rem;
+        }
+      }
+      &.prevBtn {
+        transform: rotate(-45deg);
+      }
+      &.nextBtn {
+        transform: rotate(135deg);
+      }
+      &.todayBtn {
+        position: absolute;
+        right: 2.5rem;
+        font-size: 0.7rem;
+        background-color: var(--color-4);
+        color: white;
+        padding: 0.3rem 0.5rem;
+        border-radius: 0.2rem;
+      }
+    }
   }
   .calendar {
     display: grid;
@@ -453,13 +505,18 @@
       text-align: end;
       > button {
         margin-top: 5rem;
+        &.no_margin { margin-top: 0; }
         background-color: var(--color-4);
         color: #fff;
         padding: 0.4rem 2rem;
         border-radius: 5px;
         margin-left: 0.5rem;
+        &.color1 {
+          background-color: var(--color-1);
+          color: var(--color-4);
+        }
       }
-      > div {
+      > div:not(.srchInputPlace) {
         display: grid;
         grid-template-columns: 4.5rem 1fr 1fr;
         column-gap: 0.5rem;
@@ -504,6 +561,25 @@
           }
         }
       }
+      .srchInputPlace {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.3rem;
+        padding: 1rem 0 3rem;
+        select {
+          text-align: center;
+          border: 0;
+          border-bottom: 1px solid var(--color-4);
+          padding: 0.2rem 0.5rem;
+          option {
+            font-size: 0.8rem;
+          }
+        }
+        span:first-of-type {
+          margin-right: 1rem;
+        }
+      }
       .typePart {
         label {
           display: inline-block;
@@ -523,6 +599,9 @@
         }
       }
     }
+  }
+  .periodCard {
+    margin: 5rem auto;
   }
 }
 svg{

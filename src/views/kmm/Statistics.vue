@@ -3,27 +3,34 @@
     <div class="inner nonScroll">
       <div class="topPlace">
         <div class="card">
-          <h2 class="main-header">
+          <h2 class="main-header header-template">
             <strong>사용통계</strong>
             <span>
               <strong>|</strong>
               {{ srchStartDate | date }} ~ {{ srchEndDate | date }}
             </span>
           </h2>
-          <!--          <h3>-->
-          <!--            <strong>통계 기준일 | {{ userData.statsDate }}일</strong>-->
-          <!--            <button>수정</button>-->
-          <!--          </h3>-->
+          <br />
+          <h3 class="header-template subTitle">
+            <strong>통계 기준일</strong>
+            <span>
+              <strong>|</strong>
+              {{ userData.statsDate }}일
+            </span>
+            <button>수정</button>
+          </h3>
         </div>
       </div>
-      <button class="statsSrchBtn">조회기간 수정</button>
+      <button class="statsSrchBtn" @click="openSrchPerPopup = true">
+        조회기간 수정
+      </button>
       <DoughnutChart
-        v-if="this.chartData.datasets[0].data.length > 0"
+        v-if="viewChart"
         :options="chartOption"
         :data="chartData"
         class="chartPlace"
       />
-      <div class="card" v-if="this.chartData.datasets[0].data.length > 0">
+      <div class="card" v-if="viewChart">
         <div class="card-header">
           <h3 class="card-title">사용 금액</h3>
         </div>
@@ -49,16 +56,21 @@
         </ul>
       </div>
     </div>
+    <HandleSrchPeriod
+      v-if="openSrchPerPopup"
+      @closeHandleCard="openSrchPerPopup = false"
+    />
   </main>
 </template>
 
 <script>
 import DoughnutChart from "@/components/DoughnutChart.vue";
 import { mapState } from "vuex";
+import HandleSrchPeriod from "@/components/HandleSrchPeriod.vue";
 
 export default {
   name: "Statistics",
-  components: { DoughnutChart },
+  components: { HandleSrchPeriod, DoughnutChart },
   data() {
     return {
       today: this.$moment().format("YYYYMMDD"),
@@ -201,6 +213,8 @@ export default {
           },
         ],
       },
+      viewChart: false,
+      openSrchPerPopup: false,
     };
   },
   filters: {
@@ -222,9 +236,11 @@ export default {
   mounted() {
     this.srchEndDate = this.$moment().format("YYYYMMDD");
     const todayDate = this.$moment(this.srchEndDate).date();
+    console.log(todayDate);
+
     if (this.userData.statsDate <= todayDate) {
       this.srchStartDate = this.$moment(this.srchEndDate).format(
-        `YYYYMM${this.userData.statsDate}`
+        `YYYYMM${this.setTwoNum(this.userData.statsDate)}`
       );
     } else {
       const lastMonthDate = this.$moment(this.srchEndDate).subtract(1, "month");
@@ -234,7 +250,7 @@ export default {
         );
       } else {
         this.srchStartDate = lastMonthDate.format(
-          `YYYYMM${this.userData.statsDate}`
+          `YYYYMM${this.setTwoNum(this.userData.statsDate)}`
         );
       }
     }
@@ -242,10 +258,14 @@ export default {
     this.setChartData();
   },
   methods: {
+    setTwoNum(num) {
+      if (num < 10) return "0" + num;
+      return num;
+    },
     setChartData() {
-      console.log("실행");
       const categorys = {};
       const ctgList = [];
+      let viewChartMode = false;
       this.categoryList.forEach((item) => {
         categorys[item.id] = { id: item.id, name: item.name, totalCost: 0 };
         ctgList.push({ id: item.id, name: item.name, totalCost: 0 });
@@ -272,10 +292,11 @@ export default {
       this.chartData.labels = this.chartDataList.map((item) => item.name);
       this.chartData.datasets[0].backgroundColor =
         this.backgroundColor[thisColor];
-      this.chartData.datasets[0].data = this.chartDataList.map(
-        (item) => item.totalCost
-      );
-      console.log(this.chartData.datasets[0].data);
+      this.chartData.datasets[0].data = this.chartDataList.map((item) => {
+        if (item.totalCost !== 0 && !viewChartMode) viewChartMode = true;
+        return item.totalCost;
+      });
+      if (viewChartMode) this.viewChart = true;
     },
   },
 };

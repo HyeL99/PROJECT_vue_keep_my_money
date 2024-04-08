@@ -3,12 +3,18 @@
     <Calendar
       @setActiveDate="setActiveDate"
       :activeDate="activeDate"
+      :activeYear="activeCalInfo.year"
+      :activeMonth="activeCalInfo.month"
       :historyTemp="calendarHistoryTemp"
       :history="calendarHistory"
       :days="calendarDays"
+      @viewBeforeMonth="viewBeforeMonth"
+      @viewAfterMonth="viewAfterMonth"
+      @viewToday="viewToday"
+      @onNewSrchPeriod="onNewSrchPeriod"
     />
     <div class="calendarBottom nonScroll inner">
-      <h2 class="main-header">{{ Number(viewMonth) }}월의 소비</h2>
+      <h2 class="main-header">{{ Number(activeCalInfo.month) }}월의 소비</h2>
       <section>
         <article>
           <div class="articleHeader">
@@ -113,15 +119,16 @@ export default {
       activeInfo: {},
       calendarHistory: {},
       calendarHistoryTemp: {},
-      viewYear: this.$moment().format("YYYY"),
-      viewMonth: this.$moment().format("MM"),
-      // viewMonth: "02",
       openViewHistoryCard: false,
       openHandleHistoryCard: false,
       openEditHistoryCard: false,
       calendarLoadKey: 0,
       assets: {},
       editHistoryProps: {},
+      activeCalInfo: {
+        year: this.$moment().format("YYYY"),
+        month: this.$moment().format("MM"),
+      },
     };
   },
   filters: {
@@ -136,15 +143,43 @@ export default {
   mounted() {
     this.openViewHistoryCard = false;
     this.openHandleHistoryCard = false;
-    this.getDays(this.today);
-    this.setHistory();
+    this.viewToday();
   },
   methods: {
+    viewToday() {
+      this.getDays(this.today);
+      this.setHistory();
+    },
+    viewBeforeMonth() {
+      const activeDate = `${this.activeCalInfo.year}${this.activeCalInfo.month}01`;
+      const newActiveDate = this.$moment(activeDate)
+        .subtract(1, "month")
+        .format("YYYYMMDD");
+      this.getDays(newActiveDate);
+      this.setHistory();
+    },
+    viewAfterMonth() {
+      const activeDate = `${this.activeCalInfo.year}${this.activeCalInfo.month}01`;
+      const newActiveDate = this.$moment(activeDate)
+        .add(1, "month")
+        .format("YYYYMMDD");
+      this.getDays(newActiveDate);
+      this.setHistory();
+    },
+    onNewSrchPeriod(data) {
+      const { year, month } = data;
+      const newActiveDate = this.$moment(`${year}${month}01`).format(
+        "YYYYMMDD"
+      );
+      this.getDays(newActiveDate);
+      this.setHistory();
+    },
     openEditPopup(props) {
       this.editHistoryProps = this._.cloneDeep(props);
       this.openEditHistoryCard = true;
     },
     getDays(date) {
+      this.openViewHistoryCard = false;
       const days = [];
       const thisDay = this.$moment(date);
       const thisDayInfo = [
@@ -209,6 +244,9 @@ export default {
       }
       this.calendarDays = days;
       this.calendarHistoryTemp = this._.cloneDeep(this.calendarHistory);
+
+      this.activeCalInfo.year = thisDayInfo[0];
+      this.activeCalInfo.month = thisDayInfo[1];
     },
     setHistory() {
       this.assets = {};
@@ -223,7 +261,7 @@ export default {
         if (item.date in this.calendarHistory) {
           this.calendarHistory[item.date].list.push(item);
         }
-        if (this.$moment(item.date).format("MM") === this.viewMonth) {
+        if (this.$moment(item.date).format("MM") === this.activeCalInfo.month) {
           this.assets[item.assetId].list.push(item);
         }
       });
